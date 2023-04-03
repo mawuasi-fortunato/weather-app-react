@@ -1,0 +1,51 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--color-bg-primary);
+}
+
+.app {
+  position: relative;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app__container {
+  width: 400px;
+  min-height: 95px;
+  display: flex;
+  flex-direction: column;
+  
+  background: #ffffff;
+  border-radius: 1.125rem;
+  padding: 1rem 2rem;
+}
+
+.fadeIn {
+  animation: 0.5s fadeIn forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes fadeIn {
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .app {
+    padding: 2rem;
+  }
+  .app__container {
+    min-width: 300px;
+    padding: 1rem;
+  }
+}

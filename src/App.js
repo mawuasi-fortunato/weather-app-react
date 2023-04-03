@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
 
-function App() {
+import './App.styles.css';
+
+import { Footer, LocationNotFound, Search, Weather } from "./components";
+import { getWeatherDataByPlaceName } from "./services/weather.api";
+
+const App = () => {
+  const [weatherData, setWeatherData] = useState(null);
+  const [locationNotFound, setLocationNotFound] = useState(false);
+  
+  const handlePlaceWeatherData = async (placeName) => {
+    if(!(!!placeName)) {
+      return;
+    }
+
+    setLocationNotFound(false);
+
+    const data = await getWeatherDataByPlaceName(placeName);
+        
+    if(!data) {
+      setWeatherData(null);
+      setLocationNotFound(true);
+    } else {
+      setWeatherData(data);
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <div className="app__container">
+        <Search
+          onSearchPlace={handlePlaceWeatherData}
+        />
+        {weatherData ?
+          <Weather
+            image={weatherData.image}
+            temperature={weatherData.temperature}
+            description={weatherData.description}
+            humidity={weatherData.humidity}
+            windSpeed={weatherData.windSpeed}
+          />
+          : <></>}
+        {locationNotFound ?
+          <LocationNotFound />
+          : <></>}
+      </div>
+      <Footer />
     </div>
   );
-}
+};
 
 export default App;

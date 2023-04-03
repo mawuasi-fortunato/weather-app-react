@@ -1,0 +1,43 @@
+.app__footer {
+  position: absolute; 
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  bottom: 0;
+}
+
+.app__footer-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
+
+.app__footer-container p {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+
+  color: #ffffff;
+}
+
+.app__footer-container a {
+  font-size: 20px;
+  text-decoration: none;
+  outline: none;
+  color: #ffffff;
+}
+
+.app__footer-container p,
+.app__footer-container a {
+  margin: 0 .325rem;
+}
+
+@media screen and (max-width: 550px) {
+    .app__footer {
+      justify-content: center;
+    }
+}
