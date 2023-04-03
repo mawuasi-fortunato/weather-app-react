@@ -36,6 +36,6 @@ To generate an api key, access:
 
 [https://openweathermap.org/](https://openweathermap.org/)
 
-Create and account if you haven't already and generate a new api key.
+Create an account if you haven't it already and generate a new api key.
 
 Put the generated api key in the variable `REACT_APP_WEATHER_API_KEY` inside .env file.
