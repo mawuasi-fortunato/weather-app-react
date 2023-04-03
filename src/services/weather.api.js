@@ -1,7 +1,7 @@
 import { ResolveWeatherImage } from "../utils";
 
 const weatherApiBaseUrl = 'https://api.openweathermap.org/data/2.5/weather';
-const weatherAPIKey = '73c7bcd0cbb3a3dac9a5f95a47b74022';
+const weatherAPIKey = process.env.REACT_APP_WEATHER_API_KEY;
 
 const getWeatherDataByPlaceName = async (placeName) => {
   const searchParams = {
