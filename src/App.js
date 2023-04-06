@@ -2,12 +2,19 @@ import React, { useState } from "react";
 
 import './App.styles.css';
 
-import { Footer, LocationNotFound, Search, Weather } from "./components";
+import {
+  Footer,
+  LocationNotFound,
+  Search,
+  Weather,
+  Loading
+} from "./components";
 import { getWeatherDataByPlaceName } from "./services/weather.api";
 
 const App = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [locationNotFound, setLocationNotFound] = useState(false);
+  const [loadingLocationData, setLoadingLocationData] =useState(false);
   
   const handlePlaceWeatherData = async (placeName) => {
     if(!(!!placeName)) {
@@ -15,9 +22,12 @@ const App = () => {
     }
 
     setLocationNotFound(false);
+    setLoadingLocationData(true);
 
     const data = await getWeatherDataByPlaceName(placeName);
-        
+
+    setLoadingLocationData(false);
+
     if(!data) {
       setWeatherData(null);
       setLocationNotFound(true);
@@ -32,18 +42,24 @@ const App = () => {
         <Search
           onSearchPlace={handlePlaceWeatherData}
         />
-        {weatherData ?
-          <Weather
-            image={weatherData.image}
-            temperature={weatherData.temperature}
-            description={weatherData.description}
-            humidity={weatherData.humidity}
-            windSpeed={weatherData.windSpeed}
-          />
-          : <></>}
-        {locationNotFound ?
-          <LocationNotFound />
-          : <></>}
+        {loadingLocationData
+          ? <Loading />
+          : <></>
+        }
+        {weatherData
+          ? <Weather
+              image={weatherData.image}
+              temperature={weatherData.temperature}
+              description={weatherData.description}
+              humidity={weatherData.humidity}
+              windSpeed={weatherData.windSpeed}
+            />
+          : <></>
+        }
+        {locationNotFound
+          ? <LocationNotFound />
+          : <></>
+        }
       </div>
       <Footer />
     </div>
