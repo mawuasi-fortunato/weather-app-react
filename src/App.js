@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 
 import './App.styles.css';
 
@@ -12,28 +12,19 @@ import {
 import { getWeatherDataByPlaceName } from "./services/weather.api";
 
 const App = () => {
-  const [weatherData, setWeatherData] = useState(null);
-  const [locationNotFound, setLocationNotFound] = useState(false);
-  const [loadingLocationData, setLoadingLocationData] =useState(false);
+  const [weatherData, dispatch] = useReducer(weatherDataReducer, initialWeather);
   
   const handlePlaceWeatherData = async (placeName) => {
     if(!(!!placeName)) {
       return;
     }
 
-    setLocationNotFound(false);
-    setLoadingLocationData(true);
+    dispatch({
+      type: 'search_location',
+      payload: null
+    });
 
-    const data = await getWeatherDataByPlaceName(placeName);
-
-    setLoadingLocationData(false);
-
-    if(!data) {
-      setWeatherData(null);
-      setLocationNotFound(true);
-    } else {
-      setWeatherData(data);
-    }
+    await searchLocationWeather(placeName, dispatch);
   }
 
   return (
@@ -42,21 +33,21 @@ const App = () => {
         <Search
           onSearchPlace={handlePlaceWeatherData}
         />
-        {loadingLocationData
+        {weatherData.searchingLocation
           ? <Loading />
           : <></>
         }
-        {weatherData
+        {weatherData.data
           ? <Weather
-              image={weatherData.image}
-              temperature={weatherData.temperature}
-              description={weatherData.description}
-              humidity={weatherData.humidity}
-              windSpeed={weatherData.windSpeed}
+              image={weatherData.data.image}
+              temperature={weatherData.data.temperature}
+              description={weatherData.data.description}
+              humidity={weatherData.data.humidity}
+              windSpeed={weatherData.data.windSpeed}
             />
           : <></>
         }
-        {locationNotFound
+        {weatherData.locationNotFound
           ? <LocationNotFound />
           : <></>
         }
@@ -64,6 +55,62 @@ const App = () => {
       <Footer />
     </div>
   );
+};
+
+async function searchLocationWeather(locationName, dispatch) {
+  const data = await getWeatherDataByPlaceName(locationName);
+
+  if(!data) {
+    return dispatch({
+      type: 'not_found_location',
+      payload: null
+    });
+  }
+
+  return dispatch({
+    type: 'found_location',
+    payload: data
+  });
+}
+
+function weatherDataReducer(state, action) {
+  const newState = {...state};
+
+  switch(action.type) {
+    case 'search_location': {
+      return {
+        ...newState,
+        data: null,
+        locationNotFound: false,
+        searchingLocation: true
+      }
+    }
+    case 'found_location': {
+      return {
+        ...newState,
+        data: action.payload,
+        locationNotFound: false,
+        searchingLocation: false
+      }
+    }
+    case 'not_found_location': {
+      return {
+        ...newState,
+        data: action.payload,
+        locationNotFound: true,
+        searchingLocation: false
+      }
+    }    
+    default: {
+      throw Error('Unknown action: ', action.type);
+    }
+  }
+}
+
+const initialWeather = {
+  data: null,
+  locationNotFound: false,
+  searchingLocation: false
 };
 
 export default App;
